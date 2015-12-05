@@ -1,0 +1,50 @@
+#!/bin/bash
+#1. Вывести топ-10 наиболее часто встречающихся в логе IP адресов
+awk '{print $1}' ~/AccessLog/access.log | sort | uniq -c | sort -nr | head > Top10.txt
+exit 0
+
+#!/bin/bash
+#2. Вывести топ-10 URL для наиболее часто встречающегося IP из п.1
+grep $(awk '{print $2}' Top10.txt | head -1) access.log | cut -d \" -f 4 | sort | uniq -c | sort -nr > Top10URL.txt
+exit 0
+
+#!/bin/bash
+#3. Вывести распределение статусов ответа HTTP сервера. 
+grep $(awk '{print $2}' Top10.txt | head -1) access.log | cut -d \" -f 3 | cut -d ' ' -f 2 | sort | uniq -c | sort -nr > StatusCode.txt
+exit 0
+
+#!/bin/bash
+#4. Вывести распределение версий User-Agent для клиента Wget
+grep Wget access.log | cut -d \" -f 6 | sort | uniq -c | sort -nr > Wget.txt
+exit 0
+
+#!/bin/bash
+#5. Какие URL-пути чаще всего запрашивали при помощи Wget
+grep Wget access.log | cut -d \" -f 2 | sort | uniq -c | sort -nr | head > URLWget.txt
+exit 0
+ 
+#!/bin/bash
+#6. Какой IP чаще других обращался к north_subrubric.html
+cut -d \" -f 1,2 access.log | grep "north_subrubric.html" | sort -nr | head -1$
+exit 0
+
+#!/bin/bash
+#7 В каталоге находятся файлы с фотографиями в формате RAW и JPG
+#необходимо удалить такие файлы с расширением JPG для которых существует файл RAW с тем же именем
+rm -f $(ls *.raw | sed 's/...$/jpg/')
+exit 0
+
+#!/bin/bash
+#8 Раписать однострочник создающий каталог с файлами
+mkdir Album1 && echo > ./Album1/"-listen this".mp3 > ./Album1/"my favorite song".mp3 > ./Album1/"super hit".mp3
+exit 0
+
+#!/bin/bash
+#9 В структуре каталогов с общим корнем (каталог с подкаталогами) помимо прочего содержится коллекция mp3 файлов...
+find -name '*.mp3'|while read file; do ./convert.sh "$file"; done
+exit 0
+
+#!/bin/bash
+#10 Написать однострочник создающий резервные копии файлов с расширением bak
+for i in *.mp3; do cp -- "${i}" "${i}".bak; done
+exit 0
